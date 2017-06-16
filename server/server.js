@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 var {mongoose} = require('./db/mangoose')
 var {Todo} = require('./models/todo');
 var {Users} = require('./models/user');
+var bodyParser = require('body-parser');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.listen(3000,() => {
    console.log('we are ONPORT 3000');
 });
 
+module.exports = {app};
 
 
 
