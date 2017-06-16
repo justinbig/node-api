@@ -7,7 +7,7 @@ beforeEach((done) => {
 	Todo.remove({}).then(() => {
 		done();
 	}); // this will remove any thing in the data base before our test code run.
-})
+});
 
 describe('post todo', () => {
    it('should create a new todo', (done) => {
@@ -17,7 +17,7 @@ describe('post todo', () => {
    	     .post('/todos')
    	     .send({text}) //in order to send data along with request as body we have to call send() pass in object.
          .expect(200) //expect to be ok
-         .expect((res)=> {
+         .expect((res) => {
          	expect(res.body.text).toBe(text); // here we check if the res body has the text property above.
          })
          .end((er,res) => { //here instead of passing done we pass function 
@@ -30,6 +30,7 @@ describe('post todo', () => {
          		expect(todos[0].text).toBe(text); //checking if todos has text propert up above
          		done();
          	}).catch((e) => done(e));
+         })
 
          });
    });
@@ -46,6 +47,7 @@ describe('post todo', () => {
    	      	if(er) {
    	      		return done(er)
    	      	}
+   	      	
    	      	Todo.find().then((todos) => {
    	      		 expect(todos.length).toBe(0)
    	      		 expect(todos[0]).toBe();
@@ -53,7 +55,30 @@ describe('post todo', () => {
    	      	}).catch((e) => {
    	      		 done(e);
    	      	})
-   	      })
-   })
-});
+   	      });
 
+})
+
+
+it("sholud create to do", (done) => {
+	var text = 'hello justin';
+	request(app)
+	 .post('/todos')
+	 .send({text})
+	 .expect(200)
+	 .expect((res) => {
+	 	 expect(res.body.text).toBe(text)
+	 })
+
+	 .end((er,res) => {
+	 	if(er) {
+	 		return done(er)
+	 	}
+
+	 	Todo.find().then((todos) => {
+	 		expect(todos.length).toBe(1);
+	 		expect(todos[0].text).toBe(text);
+	 		done();
+	 	}).catch((e) => done(e))
+	 })
+});
