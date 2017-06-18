@@ -3,10 +3,16 @@ const request = require('supertest');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
+const todos = [{
+	text : "first test todo"
+},{
+	text: "second text to do"
+}];
+
 beforeEach((done) => {
 	Todo.remove({}).then(() => {
-		done();
-	}); // this will remove any thing in the data base before our test code run.
+		return Todo.insertMany(todos);
+	}).then(() => done()); // this will remove any thing in the data base before our test code run.
 });
 
 describe('post todo', () => {
@@ -25,7 +31,7 @@ describe('post todo', () => {
          		return done(er)
          	}
 
-         	Todo.find().then((todos) => {// find all data in todos now we only inserted one
+         	Todo.find({text}).then((todos) => {// find all data in todos now we only inserted one
          		expect(todos.length).toBe(1); //check if there is oonly one.
          		expect(todos[0].text).toBe(text); //checking if todos has text propert up above
          		done();
@@ -40,17 +46,15 @@ describe('post todo', () => {
    	     .post('/todos')
    	     .send({})
    	     .expect(400)
-   	      .expect((res) => {
-   	      	 expect(res.body.text).toBe()
-   	      })
+   	      
    	      .end((er,res) => {
    	      	if(er) {
    	      		return done(er)
    	      	}
    	      	
    	      	Todo.find().then((todos) => {
-   	      		 expect(todos.length).toBe(0)
-   	      		 expect(todos[0]).toBe();
+   	      		 expect(todos.length).toBe(2)
+   	      		
    	      		 done();
    	      	}).catch((e) => {
    	      		 done(e);
@@ -75,10 +79,22 @@ it("sholud create to do", (done) => {
 	 		return done(er)
 	 	}
 
-	 	Todo.find().then((todos) => {
+	 	Todo.find({text}).then((todos) => {
 	 		expect(todos.length).toBe(1);
 	 		expect(todos[0].text).toBe(text);
 	 		done();
 	 	}).catch((e) => done(e))
 	 })
 });
+
+describe('/get todos', () => {
+	it('should return all todos', (done) => {
+		request(app)
+		 .get('/todos')
+		 .expect(200)
+		 .expect((res) => {
+		 	expect(res.body.todos.length).toBe(2);
+		 })
+		 .end(done)
+	})
+})
