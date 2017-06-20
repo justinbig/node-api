@@ -30,16 +30,16 @@ app.get('/todos',(req,res) => {
 })
 
 app.get('/todos/:id', (req,res) => {
-    var id = req.params.id;
-    if(!ObjectID.isValid(id)) {
+    var id = req.params.id; // request id
+    if(!ObjectID.isValid(id)) { // if id is not valid send back error
       return res.status(404).send();
     }
-      Todo.findById(id).then((todos) => {
-         if(!todos) {
+      Todo.findById(id).then((todos) => {//find data in the database by id
+         if(!todos) {//if no data inside data send error 404
             return res.status(404).send();
             
         }
-          res.send(todos);
+          res.send(todos); //if there is data send it back
 
       }).catch((e) =>{
          res.status(404).send();
