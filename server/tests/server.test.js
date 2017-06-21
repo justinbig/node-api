@@ -91,7 +91,7 @@ it("sholud create to do", (done) => {
 });
 
 describe('/get todos', () => {
-	it('should return all todos', (done) => {
+	it('shoul return all todos', (done) => {
 		request(app)
 		 .get('/todos')
 		 .expect(200)
